@@ -10,10 +10,25 @@ namespace CalculatorApp
 
         public Calculator(string expression)
         {
+            // Take out all spaces from the expression
+            // and store it in the calculator object
+            Expression = Regex.Replace(expression, @"\s+", "");
+
+            // calculate the result
+            Result = this.calculate();
         }
 
         private string calculate()
         {
+            string e = Expression;
+
+            // the procedure of handling the expression
+            checker(e);
+            e = processBrackets(e);
+            e = multiplyAndDivide(e);
+            e = addAndSubtract(e);
+
+            return e;
         }
 
         private void checker(string expression)
