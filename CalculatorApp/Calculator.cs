@@ -77,6 +77,60 @@ namespace CalculatorApp
 
         private string processBrackets(string expression)
         {
+            //To find the opening bracket in the expression
+            int start = expression.IndexOf('(');
+            int end = -1; 
+
+            //If no openinig bracket, return expression as is (no calculation)
+            if ( start == -1 )
+            {
+                return expression;
+            }
+
+            int bracketDepth = 0;
+
+            //Loop expression staring from opening bracket
+            for (int i = start; i < expression.Length; i++)
+            {
+                //Tracks nested bracketDepth
+                //To make sure we have one opening and one closing bracket
+                if (expression[i] == '(')
+                {
+                    bracketDepth++;
+                }
+                else if (expression[i] == ')')
+                {
+                    bracketDepth--;
+                }
+
+                //To find the correct closing bracket position
+                if (end == -1 && expression[i] == ')' && bracketDepth == 0)
+                {
+                    end = i;
+                }
+            }
+
+            if (bracketDepth != 0) {
+
+                throw new Exception("Invalid expression with wrong brackets: " + expression);
+
+            }
+
+            //Evaluate expression inside the matching () brackets
+            if (start != -1 && end != -1 && start < end)
+            {
+             return new Calculator(expression.Substring(0, start)
+            //Recuring expressions until no brackets
+            + new Calculator(expression.Substring(start + 1, end - start - 1)).Result.ToString()
+            + expression.Substring(end + 1)
+            ).Result.ToString();
+            }
+            else
+            {
+                //if no valid brackets, nothing to process, return the expression unchanged
+                return expression;
+            }
+            }
         }
 
         private string multiplyAndDivide(string expression)
