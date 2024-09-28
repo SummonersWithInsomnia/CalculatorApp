@@ -135,6 +135,45 @@ namespace CalculatorApp
 
         private string multiplyAndDivide(string expression)
         {
+            // Define a pattern to find multiplication or division
+            string pattern = @"([-]?\d+\d*)([*/])([-]?\d+\.?\d*)";
+
+            // Frind the first match in the expression
+            Match match = Regex.Match(expression, pattern);
+
+            // loops while there are matches
+            while (match.Success)
+            {
+                // Gets the left number
+                double left = double.Parse(match.Groups[1].Value);
+
+                // Gets the right number 
+                double right = double.Parse(match.Groups[3].Value);
+
+                // Store the results
+                double result = 0.0f;
+                
+                // Checks if it's multiplication then calculates the products
+                if (match.Groups[2].Value == "*")
+                {
+                    result = left * right;
+                }
+
+                // Checks if it's division then calculates the quotient 
+                else if (match.Groups[2].Value == "/")
+                {
+                    result = left / right;
+                }
+
+                // Replace the operation with the result in the expression
+                expression = expression.Replace(match.Groups[1].Value + match.Groups[2].Value + match.Groups[3].Value, result.ToString());
+                
+                // Find the next match
+                match = Regex.Match(expression, pattern);
+            }
+
+            // Find the next match
+            return expression;
         }
 
         private string addAndSubtract(string expression)
