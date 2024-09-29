@@ -136,7 +136,7 @@ namespace CalculatorApp
         private string multiplyAndDivide(string expression)
         {
             // Define a pattern to find multiplication or division
-            string pattern = @"([-]?\d+\d*)([*/])([-]?\d+\.?\d*)";
+            string pattern = @"([-]?\d+\.?\d*)([*/])([-]?\d+\.?\d*)";
 
             // Frind the first match in the expression
             Match match = Regex.Match(expression, pattern);
