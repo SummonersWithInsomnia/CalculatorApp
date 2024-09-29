@@ -70,30 +70,30 @@ namespace CalculatorApp
             // Check if the expression matches the defined pattern
             if (!Regex.IsMatch(expression, pattern))
             {
-                throw new Exception("Invalid expression: " + expression); // Throw exception if the expression contains invalid characters
+                // Throw exception if the expression contains invalid characters
+                throw new Exception("Invalid expression: " + expression);
             }
-
         }
 
         private string processBrackets(string expression)
         {
-            //To find the opening bracket in the expression
+            // To find the opening bracket in the expression
             int start = expression.IndexOf('(');
-            int end = -1; 
+            int end = -1;
 
-            //If no openinig bracket, return expression as is (no calculation)
-            if ( start == -1 )
+            // If no opening bracket, return expression as is (no calculation)
+            if (start == -1)
             {
                 return expression;
             }
 
             int bracketDepth = 0;
 
-            //Loop expression staring from opening bracket
+            // Loop expression staring from opening bracket
             for (int i = start; i < expression.Length; i++)
             {
-                //Tracks nested bracketDepth
-                //To make sure we have one opening and one closing bracket
+                // Tracks nested bracketDepth
+                // To make sure we have one opening and one closing bracket
                 if (expression[i] == '(')
                 {
                     bracketDepth++;
@@ -103,33 +103,30 @@ namespace CalculatorApp
                     bracketDepth--;
                 }
 
-                //To find the correct closing bracket position
+                // To find the correct closing bracket position
                 if (end == -1 && expression[i] == ')' && bracketDepth == 0)
                 {
                     end = i;
                 }
             }
 
-            if (bracketDepth != 0) {
-
+            if (bracketDepth != 0)
+            {
                 throw new Exception("Invalid expression with wrong brackets: " + expression);
-
             }
 
-            //Evaluate expression inside the matching () brackets
+            // Evaluate expression inside the matching () brackets
             if (start != -1 && end != -1 && start < end)
             {
-             return new Calculator(expression.Substring(0, start)
-            //Recuring expressions until no brackets
-            + new Calculator(expression.Substring(start + 1, end - start - 1)).Result.ToString()
-            + expression.Substring(end + 1)
-            ).Result.ToString();
+                return new Calculator(expression.Substring(0, start)
+                                      // Recuring expressions until no brackets
+                                      + new Calculator(expression.Substring(start + 1, end - start - 1)).Result
+                                          .ToString() + expression.Substring(end + 1)).Result.ToString();
             }
             else
             {
-                //if no valid brackets, nothing to process, return the expression unchanged
+                // if no valid brackets, nothing to process, return the expression unchanged
                 return expression;
-            }
             }
         }
 
@@ -152,7 +149,7 @@ namespace CalculatorApp
 
                 // Store the results
                 double result = 0.0f;
-                
+
                 // Checks if it's multiplication then calculates the products
                 if (match.Groups[2].Value == "*")
                 {
@@ -166,8 +163,9 @@ namespace CalculatorApp
                 }
 
                 // Replace the operation with the result in the expression
-                expression = expression.Replace(match.Groups[1].Value + match.Groups[2].Value + match.Groups[3].Value, result.ToString());
-                
+                expression = expression.Replace(match.Groups[1].Value + match.Groups[2].Value + match.Groups[3].Value,
+                    result.ToString());
+
                 // Find the next match
                 match = Regex.Match(expression, pattern);
             }
@@ -178,28 +176,28 @@ namespace CalculatorApp
 
         private string addAndSubtract(string expression)
         {
-              // A pattern to find addition or sutraction
+            // A pattern to find addition or sutraction
             string pattern = @"([-]?\d+\.?\d*)([+-])([-]?\d+\.?\d*)";
 
-            //uses the expresssion string to search for a substring that matches the pattern
+            // uses the expresssion string to search for a substring that matches the pattern
             Match match = Regex.Match(expression, pattern);
 
-            //loop while match is successful
+            // loop while match is successful
             while (match.Success)
             {
-                //converts the left number from string to double
+                // converts the left number from string to double
                 double left = double.Parse(match.Groups[1].Value);
-                //converts the right number from string to double
+                // converts the right number from string to double
                 double right = double.Parse(match.Groups[3].Value);
-                //A variable to hold the result of addition or subtraction
-                double result = 0.0f; 
+                // A variable to hold the result of addition or subtraction
+                double result = 0.0f;
 
-                //checks if the operator is a plus sign and adds accordingly
+                // checks if the operator is a plus sign and adds accordingly
                 if (match.Groups[2].Value == "+")
                 {
                     result = left + right;
                 }
-                //check if the operator captured is a negative sign and subtracts accordingly
+                // check if the operator captured is a negative sign and subtracts accordingly
                 else if (match.Groups[2].Value == "-")
                 {
                     result = left - right;
@@ -211,7 +209,7 @@ namespace CalculatorApp
                 match = Regex.Match(expression, pattern);
             }
 
-            //close while loop
+            // close while loop
             return expression;
         }
     }
