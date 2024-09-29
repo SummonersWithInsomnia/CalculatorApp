@@ -178,6 +178,41 @@ namespace CalculatorApp
 
         private string addAndSubtract(string expression)
         {
+              // A pattern to find addition or sutraction
+            string pattern = @"([-]?\d+\.?\d*)([+-])([-]?\d+\.?\d*)";
+
+            //uses the expresssion string to search for a substring that matches the pattern
+            Match match = Regex.Match(expression, pattern);
+
+            //loop while match is successful
+            while (match.Success)
+            {
+                //converts the left number from string to double
+                double left = double.Parse(match.Groups[1].Value);
+                //converts the right number from string to double
+                double right = double.Parse(match.Groups[3].Value);
+                //A variable to hold the result of addition or subtraction
+                double result = 0.0f; 
+
+                //checks if the operator is a plus sign and adds accordingly
+                if (match.Groups[2].Value == "+")
+                {
+                    result = left + right;
+                }
+                //check if the operator captured is a negative sign and subtracts accordingly
+                else if (match.Groups[2].Value == "-")
+                {
+                    result = left - right;
+                }
+
+                // replaces the result, with the matched portion then convert it back to string
+                expression = expression.Replace(match.Groups[1].Value + match.Groups[2].Value + match.Groups[3].Value,
+                    result.ToString());
+                match = Regex.Match(expression, pattern);
+            }
+
+            //close while loop
+            return expression;
         }
     }
 }
