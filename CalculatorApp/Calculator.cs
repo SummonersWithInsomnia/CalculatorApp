@@ -23,15 +23,18 @@ namespace CalculatorApp
             string e = Expression;
 
             // the procedure of handling the expression
-            checker(e);
+            e = checker(e);
             e = processBrackets(e);
             e = multiplyAndDivide(e);
             e = addAndSubtract(e);
 
+            // Save the result
+            CalculatorHelper.LastResult = e;
+            
             return e;
         }
 
-        private void checker(string expression)
+        private string checker(string expression)
         {
             // Initialize a counter for checking brackets
             // 0 means that the expression has brackets or no brackets
@@ -65,6 +68,32 @@ namespace CalculatorApp
                 throw new Exception("Invalid expression."); // Throw exception if the expression is empty
             }
 
+            // Find 'ans'
+            if (expression.IndexOf("ans") != -1)
+            {
+                // replace 'ans'
+                expression = expression.Substring(0,
+                    expression.IndexOf("ans")) + CalculatorHelper.LastResult +
+                    expression.Substring(expression.IndexOf("ans") + 3);
+            }
+            
+            // Find x=???
+            string setXValuePattern = @"([x])([=])([-]?\d+\.?\d*)";
+
+            if (Regex.IsMatch(expression, setXValuePattern))
+            {
+                // Save the x value
+                CalculatorHelper.XValue = Regex.Match(expression, setXValuePattern).Groups[3].Value;
+                expression = CalculatorHelper.XValue;
+            }
+
+            // Find x
+            if (expression.IndexOf("x") != -1)
+            {
+                expression = expression.Substring(0, expression.IndexOf("x")) + CalculatorHelper.XValue +
+                             expression.Substring(expression.IndexOf("x") + 1);
+            }
+
             // Define a regular expression pattern to validate the expression
             string pattern = @"^[()\d+\-*/. ]+$";
             // Check if the expression matches the defined pattern
@@ -73,6 +102,8 @@ namespace CalculatorApp
                 // Throw exception if the expression contains invalid characters
                 throw new Exception("Invalid expression: " + expression);
             }
+
+            return expression;
         }
 
         private string processBrackets(string expression)
